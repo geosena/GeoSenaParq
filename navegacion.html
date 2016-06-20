@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta name="description" content="GeoLocalizaci&oacute;n automatica de parquederos aprendices, instructores Sena centros bogota">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta charset="utf-8">
+<title>GEO-SENA</title>
+<link type="text/css" rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="fonts/style.css">
+<!--Boton ir arriba-->
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="js/jquery-latest.js"></script>
+
+<script>
+	$(document).ready(function() {
+			$('.menu').addClass('menu-fixed');
+	});
+</script>
+<!-- alertify -->
+<script src="js/alertify/lib/alertify.min.js"></script>
+<!-- include the core styles -->
+<link rel="stylesheet" href="js/alertify/themes/alertify.core.css" />
+<!-- include a theme, can be included into the core instead of 2 separate files -->
+<link rel="stylesheet" href="js/alertify/themes/alertify.default.css" />
+
+<!--mapa-->
+<script src="https://maps.googleapis.com/maps/api/js?v=3.22.exp&sensor=false&language=es"></script>   
+<script>
+window.onload = function() {
+// Aquí el código que deseamos cargar
+
+if( navigator.geolocation )
+     { 
+        navigator.geolocation.getCurrentPosition(mostrar, errores);
+     }
+    else
+     {
+        alert("Your browser does not support geolocation services.");
+    }
+ 
+
+ //mapa
+ function mostrar(posicion){
+	   
+	 var mapDiv = document.getElementById('map_canvas');
+	  
+	 var origen = new google.maps.LatLng(4.616455,-74.112301);
+	  
+	 var options = {
+		center: origen,
+		zoom: 13,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		//Definido el mapTypeControl como true, podemos establecer los valores para la propiedad mapTypeControlOptions  
+		mapTypeControl: true,
+		mapTypeControlOptions: {
+			style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+			position: google.maps.ControlPosition.TOP_RIGHT,
+		mapTypeIds: [
+			google.maps.MapTypeId.ROADMAP,
+			google.maps.MapTypeId.HYBRID
+			],
+		streetViewControl: true,
+			streetViewControlOptions: {
+				position: google.maps.ControlPosition.RIGHT_TOP
+			},
+		draggableCursor: 'crosshair'
+		}
+		};//fin option
+			 
+	 var map = new google.maps.Map(mapDiv, options);
+
+	/*******************************arrays***********************/
+
+	var loc = [
+	['Centro de Diseño y Metrología',4.616305,-74.092051,'Calle 15 # 31-42'],
+	['Centro de Elecricidad, Electrónica y Telecomunicaciones',4.595445,-74.112301,'Carrera 30 No.17B-25 Sur'],
+	['Centro de Formación de Talento Humano en Salud',4.631899,-74.063237,'Carrera 6 # 45-52, Bogotá, Colombia'],
+	['Centro de Gestión Administrativa',4.604075,-74.079351,'Avenida carrera 14 # 13-80, Bogotá, Colombia'],
+	['Centro de Gestión de Mercados, Logística y TICs',4.639235 ,-74.066182,'Caracas #13-65, Bogotá, Colombia'],
+	['Centro de Gestión Industrial',4.61641,-74.091896,'Calle 15 # 31-42, Bogotá, Colombia'],
+	['Centro de Formación en Actividad Física y Cultura',4.614024,-74.167981,'Transversal 78J # 41D-15 sur, Bogotá, Colombia'],
+	['Centro de Manufacturas en textiles y Cuero',4.595168,-74.112788,'Carrera 30 No.17B-25 Sur'],
+	['Centro de Materiales y Ensayos',4.595884,-74.110747,'Carrera 30 No.17B-25 Sur'],
+	['Centro de Servicios Financieros',4.651787,-74.063019,'Carrera 13 # 65-10, Bogotá, Colombia'],
+	['Centro de Tecnologías de Transporte',4.592719,-74.191146,'Autopista Sur Carrera 4 # 53-54, Bogotá, Colombia'],
+	['Centro de Tecnologías para la Construcción y la Madera',4.592351,-74.093974,'Cra. 18a #2-18 sur, Bogotá, Colombia'],
+	['Centro Nacional de Hotelería, Turismo y Alimentos',4.615897,-74.09075,'Carrera 30 # 15-53, Bogotá, Colombia'],
+	['Centro para la Industria de la Comunicación Gráfica',4.615634,-74.092136,'Calle 15 # 31-42, Bogotá, Colombia'],
+	['Centro Metalmecánico',4.5961144,-74.1109317,'Carrera 30 No.17B-25 Sur'],
+		];
+	
+	
+/******************************* fin arrays***********************/
+
+/******************************* marcadores***********************/
+	
+	var infowindow = new google.maps.InfoWindow();
+    var marker, i;
+	var markers = [];
+	for (i=0;i<loc.length;i++){
+		
+		var myLatLng = new google.maps.LatLng(loc[i][1], loc[i][2]);
+		
+		var image = "img/22.png";
+		
+		marker = new google.maps.Marker({
+			  position:myLatLng,
+			  map:map,
+			  title:loc[i][0].toString(),
+			  icon: image,
+			  animation: google.maps.Animation.DROP
+			  });
+			  
+		markers.push(marker);
+		
+		google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(loc[i][0]);
+            infowindow.open(map, marker);
+          }
+        })(marker, i));
+		
+		
+		
+	}//fin for
+	
+	var selectmenu=document.getElementById("centros");
+	
+	selectmenu.onchange=(function(){ //run some code when "onchange" event fires
+	 var chosenoption=this.options[this.selectedIndex] //this refers to "selectmenu"
+		for (var i = 0; i < markers.length; i++) {
+					markers[i].setMap(null);
+					//markers[i].setVisible(false);
+		}
+		for (i=0;i<loc.length;i++){
+			
+			if (chosenoption.value==loc[i][0].toString()){
+								
+				var myLatLng = new google.maps.LatLng(loc[i][1], loc[i][2]);
+		
+				var image = "img/22.png";
+				
+				marker = new google.maps.Marker({
+					  position:myLatLng,
+					  map:map,
+					  title:loc[i][0].toString(),
+					  icon: image,
+					  animation: google.maps.Animation.DROP
+					  });
+				markers.push(marker);
+				map.setZoom(18);
+            	map.panTo(marker.position);
+				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+				  return function() {
+					infowindow.setContent(loc[i][0]);
+					infowindow.open(map, marker);
+				  }
+				})(marker, i));
+			
+			}//fin if opcion
+		}//fin for
+		
+		markers = [];
+	})//fin funciont onchange
+	
+}//fin mostrar
+	
+
+// errores de navegacion
+ function errores(error){
+	 
+	 switch(error.code) {
+			
+        case error.PERMISSION_DENIED:
+            alertify.alert("Oops! No has aceptado compartir tu posición.('User denied the request for Geolocation.')");
+			$('#opcion').addClass('ocultar')
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alertify.alert("Oops! No se puede obtener la posición actual.('Location information is unavailable.')");
+			$('#opcion').addClass('ocultar')
+            break;
+        case error.TIMEOUT:
+            alertify.alert("Oops! Hemos superado el tiempo de espera.('The request to get user location timed out.')");
+			$('#opcion').addClass('ocultar')
+            break;
+        case error.UNKNOWN_ERROR:
+            alertify.alert("Oops! Algo ha salido mal.('An unknown error occurred.')");
+			$('#opcion').addClass('ocultar')
+            break;
+    }
+			
+}
+}//function onload
+
+</script>
+</head>
+
+<body>
+<!--Header-->
+    <header class="menu">
+    <div id="titulo">
+        <h1>GEO-SENA-PARQ</h1>
+        <h2>Geolocalizaci&oacute;n Centros Sena y Parqueaderos</h2>
+     </div>
+     <nav id="menu">
+         <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="centros.html">Centros</a></li>
+            <li><a href="navegacion.html">Navegacion</a></li>
+         </ul>
+     </nav>
+    </header>
+<!--Section-->
+<div id="mapa">
+<!--Centros-->
+<section id="opcion">
+<select name="centros" id="centros">
+  <option>Seleccione Centro</option>
+  <option value="Centro de Diseño y Metrología">Centro de Diseño y Metrología</option>
+  <option value="Centro de Elecricidad, Electrónica y Telecomunicaciones">Centro de Elecricidad, Electrónica y Telecomunicaciones</option>
+  <option value="Centro de Formación de Talento Humano en Salud">Centro de Formación de Talento Humano en Salud</option>
+  <option value="Centro de Gestión Administrativa">Centro de Gestión Administrativa</option>
+  <option value="Centro de Gestión de Mercados, Logística y TICs">Centro de Gestión de Mercados, Logística y TIC's</option>
+  <option value="Centro de Gestión Industrial">Centro de Gestión Industrial</option>
+  <option value="Centro de Formación en Actividad Física y Cultura">Centro de Formación en Actividad Física y Cultura</option>
+  <option value="Centro de Manufacturas en textiles y Cuero">Centro de Manufacturas en textiles y Cuero</option>
+  <option value="Centro de Materiales y Ensayos">Centro de Materiales y Ensayos</option>
+  <option value="Centro de Servicios Financieros">Centro de Servicios Financieros</option>
+  <option value="Centro de Tecnologías de Transporte">Centro de Tecnologías de Transporte</option>
+  <option value="Centro de Tecnologías para la Construcción y la Madera">Centro de Tecnologías para la Construcción y la Madera</option>
+  <option value="Centro Nacional de Hotelería, Turismo y Alimentos">Centro Nacional de Hotelería, Turismo y Alimentos</option>
+  <option value="Centro para la Industria de la Comunicación Gráfica">Centro para la Industria de la Comunicación Gráfica</option>
+  <option value="Centro Metalmecánico">Centro Metalmecánico</option>
+</select>
+</section>
+<section id="map_canvas">
+        
+        
+</section>
+</div>
+<!--Footer-->
+<footer class="fofixed">
+<p>Centro de Electricidad, Electronica y Telecomunicaciones(CEET)</p>
+<p> &copy; Sena - Servicio Nacional de Aprendizaje</p>
+</footer>
+<!--Google Analytics-->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-79529454-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
