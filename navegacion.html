@@ -24,7 +24,9 @@
 <link rel="stylesheet" href="js/alertify/themes/alertify.default.css" />
 
 <!--mapa-->
-<script src="https://maps.googleapis.com/maps/api/js?v=3.22.exp&sensor=false&language=es"></script>   
+<script async defer 
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDkn8-w_uTF3SxbCkp9w5DXIG7u6IYJb4&signed_in=true&callback=mostrar">
+</script>   
 <script>
 window.onload = function() {
 // Aquí el código que deseamos cargar
@@ -215,7 +217,7 @@ if( navigator.geolocation )
 <!--Centros-->
 <section id="opcion">
 <select name="centros" id="centros">
-  <option>Seleccione Centro</option>
+  <option>Seleccione Sede</option>
   <option value="Centro de Diseño y Metrología">Centro de Diseño y Metrología</option>
   <option value="Centro de Elecricidad, Electrónica y Telecomunicaciones">Centro de Elecricidad, Electrónica y Telecomunicaciones</option>
   <option value="Centro de Formación de Talento Humano en Salud">Centro de Formación de Talento Humano en Salud</option>

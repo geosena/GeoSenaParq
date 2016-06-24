@@ -29,7 +29,7 @@
 						<li><a href="<?php echo URL; ?>centro/agregar">Agregar</a></li>							
 					</ul>
 				</li>
-                <li><a href="ProyectoSena1/../../../informe/index.html">Informes</a></li>					
+                <li><a href="GeoSenaParq/../../../informe/index.html">Informes</a></li>					
 
 			</ul>
 
@@ -45,6 +45,7 @@
 <section class="container" style="text-align:center;">
 <h1>Bienvenido!</h1>
 <h2>Gesti&oacute;n de administraci&oacute;n de sedes y parqueaderos	</h2>
+<img src="GeoSenaParq/../../../img/Logo_sena.png" alt="Logo Sena" width="285" height="226" id="logo" style="border-radius:50%;">
 </section>
 
 
